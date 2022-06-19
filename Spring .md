@@ -5,6 +5,14 @@
 - 源自于建筑学 ,隶属于土木工程,后发展到软件工程领域
 - 软件工程框架 :经过验证的具有一定功能的 半成品软件
 
+## 框架的作用
+
+1. 提高开发效率
+2. 增强可重用性
+3. 提供编写规范
+4. 节约维护成本
+5. 结构底层实现原理
+
 ## Spring的概述
 
 - spring是什么
@@ -231,6 +239,17 @@ IOC操作Bean管理
 **IOC和DI有什么区别?**
 
 DI是IOC的一种依赖实现
+
+### Bean标签的属性及配置
+
+```
+<bean id="userService" name="userService1,userService2" class="cn.doudou.service.impl.UserServiceImpl"></bean>
+
+id 给配置的文件起一个自定义的名字
+name 就相当于是一个文件的别名 作用和id 一样可以使用getBean()进行获得
+class 配置文件的路径
+
+```
 
 ### Set注入
 

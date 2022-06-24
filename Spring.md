@@ -1,4 +1,4 @@
-#  Spring
+# Spring
 
 ## Spring的简介
 
@@ -140,6 +140,99 @@ IOC概念和spring中IOC
   
   ```
 
+## 配置文件的主要配置
+
+### Bean
+
+#### Bean标签的属性及配置
+
+```xml
+<bean id="userService" name="userService1,userService2" class="cn.doudou.service.impl.UserServiceImpl"></bean>
+
+id 给配置的文件起一个自定义的名字
+name 就相当于是一个文件的别名 作用和id 一样可以使用getBean()进行获得
+class 配置文件的路径
+```
+
+#### bean-scope
+
+**scope用于控制bean创建后的对象是否为单例的** 
+
+```xml
+<bean scope=""></bean>
+```
+
+**取值**
+
+1. `singleton`:设定创建出的对象保在Spring容器中,是一个单例的对象
+   1. 创建的时候进行加载该对象
+2. `prototype`:设定创建出的对象保存在Spring容器中,是一个非单例的对象
+   1. 获取的时候在进行加载该对象
+3. `request、session、application、websocket`:设定创建出的对象放置在web容器对应的的位置
+
+#### bean的生命周期
+
+```xml
+<bean init-method="init" destroy-method="destroy"></bean>
+```
+
+ 注意事项:
+
+1. 当scope =  `singleton` ,spring电容器中有且只有一个对象,init方法在创建容器时仅执行一次
+2. 当scope = `prototype`,spring容器要创建同一类型的多个对象,init方法在每个对象创建时均执行一次
+3. 当scope = `singleton` , 关闭容器会导致bean实例的销毁,调用destroy方法一次
+4. 当scope = `prototype`, 对象的销毁由垃圾回收机制gc()控制,destroy方法将不会被 执行
+
+#### FactoryBean
+
+`Spring中有两种bean 一种普通bean 一种工厂bean FactoryBean`
+
+普通bean: 定义什么类型就返回什么类型
+
+工厂bean:定义什么类型可能返回别的类型
+
+首先创建一个**静态工厂的类**进行返回自己要创建的对象
+
+```java
+public class UserServiceFactory {
+
+    public static UserService getUserService() {
+        return new UserServiceImpl();
+    }
+}
+
+```
+
+配置文件修改下
+
+```xml
+<bean id="userService3" class="cn.doudou.service.UserServiceFactory" factory-method="getUserService">
+</bean>
+
+class 定义为自己创建的工厂类的名字
+factory-method 是定义返回对象的方法名字
+```
+
+**实例工厂类**-创建bean
+
+```java
+public class UserServiceFactory {
+
+    public  UserService getUserService() {
+        return new UserServiceImpl();
+    }
+}
+
+```
+
+配置文件
+
+```xml
+<bean id="factoryBean" class="cn.doudou.service.UserServiceFactory"/>
+
+<bean id="userService5" factory-bean="factoryBean" factory-method="getUserService"/>
+```
+
 ## IOC
 
 - `控制反转,把创建对象的过程交给Spring框架`
@@ -149,70 +242,6 @@ IOC概念和spring中IOC
 ### IOC的底层和原理
 
 - XMl的解析,工厂模式,反射
-
-### 工厂模式的实现
-
-- User
-
-  ```java
-  package cn.doudou.spring5;
-  
-  /**
-   * Create By 王嘉浩
-   * Time 2020/6/12
-   */
-  
-  public class User {
-      public void add(){
-          System.out.println("........add........");
-      }
-  }
-  
-  ```
-
-- 工厂类
-
-  ```
-  package cn.doudou.spring5;
-  
-  /**
-   * Create By 王嘉浩
-   * Time 2020/6/12
-   */
-  public class Main {
-      public static User user(){
-          return new User();
-      }
-  }
-  
-  ```
-
-- 测试类
-
-  ```java 
-  package cn.douduo.spring5;
-  
-  import cn.doudou.spring5.Main;
-  import cn.doudou.spring5.User;
-  import org.junit.Test;
-  import org.springframework.context.ApplicationContext;
-  import org.springframework.context.support.ClassPathXmlApplicationContext;
-  
-  /**
-   * Create By 王嘉浩
-   * Time 2020/6/12
-   */
-  
-  public class TestSpring5 {
-  
-      @Test
-      public  void Testgongchang(){
-          User user = Main.user();
-          user.add();
-      }
-  }
-  
-  ```
 
 ### Ioc的接口
 
@@ -240,17 +269,6 @@ IOC操作Bean管理
 
 DI是IOC的一种依赖实现
 
-### Bean标签的属性及配置
-
-```
-<bean id="userService" name="userService1,userService2" class="cn.doudou.service.impl.UserServiceImpl"></bean>
-
-id 给配置的文件起一个自定义的名字
-name 就相当于是一个文件的别名 作用和id 一样可以使用getBean()进行获得
-class 配置文件的路径
-
-```
-
 ### Set注入
 
 - 创建类 属性 使用set方法
@@ -273,8 +291,6 @@ class 配置文件的路径
   
   </beans>
   ```
-
-  
 
 - 在测试中测试 创建对象 调用方法  
 
@@ -583,13 +599,13 @@ class 配置文件的路径
 
 - 测试 运行
 
-### FactoryBean
+### SpEL
 
-`Spring中有两种bean 一种普通bean 一种工厂bean FactoryBean`
+1. Spring提供了对El表达式的支持,统一属性注入格式
 
-普通bean: 定义什么类型就返回什么类型
-
-工厂bean:定义什么类型可能返回别的类型
+```xml
+<property value="#{value}">
+```
 
 ### Bean的作用域
 
@@ -632,33 +648,31 @@ class 配置文件的路径
 
 ### xml引入外部文件
 
+`xml命名空间`
+
+```xml
+xmlns:content="http://www.springframework.org/schema/context"
+```
+
+`加载指定的配置文件`
+
 ```xml
 <context:property-placeholder location="外部文件路径"/>
 ```
 
+`获得加载文件的属性值`
 
+```xml
+<property name="name" value="${'测试'}"/>
+```
+
+### import
+
+```xml
+<import resource="文件名称"/>
+```
 
 ### 注解
-
-
-
-`Bean管理`
-
-```
-@Controller
-```
-
-```
-@Component
-```
-
-```
-@Service
-```
-
-```
-@Repository
-```
 
 `扫描组件`
 
@@ -680,6 +694,24 @@ class 配置文件的路径
     <context:component-scan base-package="" >
         <context:exclude-filter type="annotation" expression=""/>
     </context:component-scan>
+```
+
+`Bean管理`
+
+```
+@Controller  控制器
+```
+
+```
+@Component   组件
+```
+
+```
+@Service     业务
+```
+
+```
+@Repository  仓库
 ```
 
 `属性注入`
@@ -710,6 +742,34 @@ class 配置文件的路径
 
 ```
 @ComponentScan
+```
+
+`作用域`
+
+```
+@Scope
+```
+
+`生命周期`
+
+```
+@PostConstruct
+```
+
+`加载属性源 加载外部配置文件`
+
+```
+@PropertySource
+```
+
+```
+@PreDestroy
+```
+
+`导入配置类`
+
+```
+@Import
 ```
 
 ## AOP
@@ -876,15 +936,15 @@ execution(  [权限修饰符]  [返回类型]  [类全路径]  [方法名称]  [
 ### AspectJ注解
 
 - ```java
-   //前置通知
-      @Before(value = "execution(* cn.doudou.spring5.aop.User.add(..))")
-      public void before() {
-          System.out.println("前置通知....");
-      }
+  //前置通知
+     @Before(value = "execution(* cn.doudou.spring5.aop.User.add(..))")
+     public void before() {
+         System.out.println("前置通知....");
+     }
   ```
 
    
-  
+
 - ```java
   //后置通知
   @After(value = "execution(* cn.doudou.spring5.aop.User.add(..))")
@@ -892,7 +952,7 @@ execution(  [权限修饰符]  [返回类型]  [类全路径]  [方法名称]  [
       System.out.println("后置通知....");
   }
   ```
-  
+
 - ```java
    
       //最终通知 
@@ -904,45 +964,45 @@ execution(  [权限修饰符]  [返回类型]  [类全路径]  [方法名称]  [
   ```
 
 - ```java
-   //异常通知
-   @AfterThrowing(value = "execution(* cn.doudou.spring5.aop.User.add(..))")
-       public void AfterThrowing(){
-           System.out.println("异常....");
-       }
-   ```
+  //异常通知
+  @AfterThrowing(value = "execution(* cn.doudou.spring5.aop.User.add(..))")
+      public void AfterThrowing(){
+          System.out.println("异常....");
+      }
+  ```
 
 - ```java
-     //环绕通知
-       @Around(value = "execution(* cn.doudou.spring5.aop.User.add(..))")
-       public void Around(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
-           System.out.println("环绕前....");
-           proceedingJoinPoint.proceed();
-           System.out.println("环绕后....");
-       }
-   ```
+  //环绕通知
+    @Around(value = "execution(* cn.doudou.spring5.aop.User.add(..))")
+    public void Around(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
+        System.out.println("环绕前....");
+        proceedingJoinPoint.proceed();
+        System.out.println("环绕后....");
+    }
+  ```
 
 - ```java
-    //切入点抽取
-       @Pointcut(value = "execution(* cn.doudou.spring5.aop.User.add(..))")
-       public void poin(){
-      
-       }
-   //调用
-      //前置通知
-       @Before(value = "poin()")
-       public void before() {
-           System.out.println("前置通知....");
-       }
-   ```
+  //切入点抽取
+     @Pointcut(value = "execution(* cn.doudou.spring5.aop.User.add(..))")
+     public void poin(){
+    
+     }
+  //调用
+     //前置通知
+      @Before(value = "poin()")
+      public void before() {
+          System.out.println("前置通知....");
+      }
+  ```
 
 - ```
-   @Order(1) 可以对多个增强类进行优先的设置 数字越小越优先 越大越后
-   ```
+  @Order(1) 可以对多个增强类进行优先的设置 数字越小越优先 越大越后
+  ```
 
 - ```
-   @EnableAspectJAutoProxy(proxyTargetClass = true)  //基于完全注解开发使用 等价于   <!--开启aspectj生成代对象-->
-       <aop:aspectj-autoproxy/>
-   ```
+  @EnableAspectJAutoProxy(proxyTargetClass = true)  //基于完全注解开发使用 等价于   <!--开启aspectj生成代对象-->
+      <aop:aspectj-autoproxy/>
+  ```
 
 ### 基于Aspect J 案例
 
@@ -1348,5 +1408,49 @@ public class ObserverDemo extends Observable {
     }
 }
 
+```
+
+## xml配置
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:c="http://www.springframework.org/schema/c"
+	xmlns:cache="http://www.springframework.org/schema/cache"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:lang="http://www.springframework.org/schema/lang"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	                    http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop 
+		http://www.springframework.org/schema/aop/spring-aop.xsd
+		http://www.springframework.org/schema/cache 
+		http://www.springframework.org/schema/cache/spring-cache.xsd
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/jee 
+		http://www.springframework.org/schema/jee/spring-jee.xsd
+		http://www.springframework.org/schema/lang 
+		http://www.springframework.org/schema/lang/spring-lang.xsd
+		http://www.springframework.org/schema/mvc 
+		http://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/task 
+		http://www.springframework.org/schema/task/spring-task.xsd
+		http://www.springframework.org/schema/util 
+		http://www.springframework.org/schema/util/spring-util.xsd
+		http://www.springframework.org/schema/tx 
+        http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+
+
+
+</beans>
 ```
 

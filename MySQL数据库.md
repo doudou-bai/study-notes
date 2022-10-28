@@ -83,7 +83,7 @@ Structured Query Language:结构话查询语言
 
 - DQL(Data Quert Language)数据查询语言
 
-  用来擦汗寻数据库中表的记录(数据).关键字: select where等
+  用来查询数据库中表的记录(数据).关键字: select where等
 
 - DCL(Data Control Language)数据控制语言(了解)
 
@@ -157,7 +157,7 @@ Structured Query Language:结构话查询语言
 
     - 使用数据库
 
-    - ```
+    - ```mysql
       use 数据库名称;
       ```
 
@@ -174,8 +174,6 @@ Structured Query Language:结构话查询语言
     );
     ```
 
-    ,
-
 - R(Retrieve):查询
 
   - 查询某个数据库中所有表的名称
@@ -189,8 +187,6 @@ Structured Query Language:结构话查询语言
   - ```mysql
     desc 表名称;
     ```
-
-    
 
 - U(Update):修改
 
@@ -249,7 +245,6 @@ Structured Query Language:结构话查询语言
   - ```mysql
     DROP PROCEDURE IF EXISTS xxxxxx;
     ```
-    
     
 
 复制表
@@ -440,6 +435,10 @@ update 表名 set 列名1  = 值1,...[where 条件];
       );
       ```
 
+      ```mysql
+      alter table 表名 add primary key(列名 ....);
+      ```
+
    2. 删除主键
 
       ```mysql
@@ -499,8 +498,6 @@ update 表名 set 列名1  = 值1,...[where 条件];
       alter table 表名 modify 名字 数据类型；
       ```
 
-      
-
 3. 唯一约束：unique
 
    1. 创建时添加唯一约束
@@ -511,6 +508,10 @@ update 表名 set 列名1  = 值1,...[where 条件];
       id INT, 
       num VARCHAR(11) UNIQUE
       );
+      ```
+
+      ```mysql
+      alter table 表名 add unique [索引名](列名 ....);
       ```
 
    2. 删除唯一约束

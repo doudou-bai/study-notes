@@ -196,15 +196,11 @@ Structured Query Language:结构话查询语言
       alter table 表名 rename to 新的表名
       ```
 
-      
-
   - 修改表的字符集
 
     - ```mysql
       alter table 表名 charcater set 字符集名称;
       ```
-
-      
 
   - 修改列的名称 类型
 
@@ -216,23 +212,17 @@ Structured Query Language:结构话查询语言
     alter table 表名 modify 列名 新数据类型;
     ```
 
-    
-
   - 添加一列
 
     - ```mysql
       alter table 表名 add 列名 数据类型;
       ```
 
-      
-
   - 删除列
 
   - ```mysql
     alter table 表名 drop 列名;
     ```
-
-    
 
 - D(Delete):删除
 
@@ -261,10 +251,8 @@ create table 名字 like 原来的表名称
   insert into 表名(列名1,.列名2....) values (值1,值2...);
   ```
 
-  
-
   - 注意事项:
-    - 列名和值要一一对应
+  - 列名和值要一一对应
     - 如果表名后,不定义列名,则默认给所有列添加值
     - 除了数字类型,其他类型需要使用引号 单双引号都可以
 
@@ -288,10 +276,8 @@ create table 名字 like 原来的表名称
 ### 修改数据
 
 ```mysql
-update 表名 set 列名1  = 值1,...[where 条件]; 
+update 表名 set 列名1  = 值1,...[where 条件];
 ```
-
-
 
 ## DQL
 
@@ -303,31 +289,31 @@ update 表名 set 列名1  = 值1,...[where 条件];
 
   语法:
 
-  select
+  `select`
 
   ​		字段列表
 
-  from
+  `from`
 
   ​		表名列表
 
-  where
+  `where`
 
   ​		条件列表
 
-  group by
+  `group by`
 
   ​		分组字段
 
-  having
+  `having`
 
   ​		分组之后的条件
 
-  order
+  `order`
 
   ​		排序
 
-  limit 
+  `limit `
 
   ​		分页限定
 
